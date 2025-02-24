@@ -4,6 +4,7 @@ import express from "express"
 import morgan from "morgan"
 import helmet from "helmet"
 import cors from "cors"
+import authRoutes from "../src/auth/auth.routes.js"
 import { limiter } from "../middleware/rate.limit.js"
 
 const configs = (app)=>{
@@ -15,10 +16,15 @@ const configs = (app)=>{
     app.use(morgan('dev'))
 }
 
+const routes = (app)=>{
+    app.use(authRoutes)
+}
+
 export const initServer = async()=>{
     const app = express()
     try {
         configs(app)
+        routes(app)
         app.listen(process.env.PORT)
         console.log(`Server running in port ${process.env.PORT}`)
     } catch (err) {

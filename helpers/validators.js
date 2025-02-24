@@ -1,9 +1,9 @@
 import { body } from "express-validator"
-import { validateErrors } from "./validate.error"
+import { validateErrors } from "./validate.error.js"
 import { 
     existEmail, 
     existUsername 
-} from "./db.validators"
+} from "./db.validators.js"
 
 export const registerValidator = [
     body('name', 'Name cannot be empty')

@@ -1,4 +1,6 @@
 import User from '../user/user.model.js'
+import { checkPassword, encrypt } from '../../utils/encrypt.js'
+import { generateJwt } from '../../utils/jwt.js'
 
 export const register = async(req, res)=>{
     try {
@@ -26,7 +28,6 @@ export const register = async(req, res)=>{
     }
 }
 
-
 export const login = async(req, res)=>{
     try {
         let { userLoggin, password } = req.body
@@ -38,7 +39,28 @@ export const login = async(req, res)=>{
                 ]
             }
         )
+        if(user && checkPassword(user.password, password)){
+            let loggedUser = {
+                uid: user._id,
+                name: user.name,
+                username: user.username,
+                role: user.role
+            }
+            let token = await generateJwt(loggedUser)
+            return res.send(
+                {
+                    message: `welcome ${user.name}`,
+                    loggedUser,
+                    token
+                }
+            )
+        }
 
+        return res.status(400).send(
+            {
+                message: 'Wrong email or password'
+            }
+        )
     }catch(err){
         console.error(err)
         return res.status(500).send(

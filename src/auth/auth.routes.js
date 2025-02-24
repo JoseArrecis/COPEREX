@@ -1,8 +1,12 @@
 import { Router } from "express"
-import { loginValidator, registerValidator } from "../../helpers/validators"
-import { register } from "./auth.controller"
+import { 
+    login, 
+    register 
+} from "./auth.controller.js"
+import { loginValidator, registerValidator } from "../../helpers/validators.js"
+import { deleteFileOnError } from "../../middleware/delete.file.on.error.js"
 
-const api = Router
+const api = Router()
 
 api.post(
     '/register',
@@ -18,5 +22,7 @@ api.post(
     [
         loginValidator
     ],
-    
+    login
 )
+
+export default api
