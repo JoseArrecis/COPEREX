@@ -2,7 +2,7 @@ import User from '../user/user.model.js'
 import { checkPassword, encrypt } from '../../utils/encrypt.js'
 import { generateJwt } from '../../utils/jwt.js'
 
-export const register = async(req, res)=>{
+export const register = async (req, res) => {
     try {
         let data = req.body
 
@@ -11,20 +11,11 @@ export const register = async(req, res)=>{
 
         user.role = data.role || 'ADMIN'
 
-        await user.save()
-        return res.send(
-            {
-                message: `Registered succesfully, you can log with username: ${user.username}`
-            }
-        )
+        await user.save();
+        return res.send({ message: `Registered successfully, you can log in with username: ${user.username}` })
     } catch (err) {
-        console.error(err)
-        return res.status(500).send(
-            {
-                message: 'General error with registering user',
-                err
-            }
-        )
+        console.error(err);
+        return res.status(500).send({ message: 'General error registering user', err })
     }
 }
 

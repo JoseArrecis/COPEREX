@@ -12,7 +12,7 @@ export const generateJwt = async(payload)=>{
                 algorithm: 'HS256'
             }
         )
-    } catch (err) {
+    } catch(err) {
         console.error(err)
         return err
     }

@@ -1,8 +1,10 @@
 import { body } from "express-validator"
-import { validateErrors } from "./validate.error.js"
 import { 
-    existEmail, 
-    existUsername 
+    validateErrors
+} from "./validate.error.js"
+import {
+    existEmail,
+    existUsername
 } from "./db.validators.js"
 
 export const registerValidator = [
@@ -31,7 +33,7 @@ export const registerValidator = [
 export const loginValidator = [
     body('userLoggin', 'Username or email cannot be empty')
         .notEmpty()
-        .toLowerCase(),
+        .toLowerCase(),    
     body('password', 'Password cannot be empty')
         .notEmpty()
         .isLength({ min: 8 })  

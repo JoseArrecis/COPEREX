@@ -1,18 +1,15 @@
 'use strict'
 
-import jwt from "jsonwebtoken"
+import jwt from 'jsonwebtoken'
+import { findUser } from '../helpers/db.validators.js'
 
 export const validateJwt = async(req, res, next)=>{
-    try {
+    try{
         let secretKey = process.env.SECRET_KEY
 
         let {authorization} = req.headers
 
-        if(!authorization) return res.status(401).send(
-            {
-                message: 'Unauthorized'
-            }
-        )
+        if(!authorization) return res.status(401).send({message: 'Unauthorized'})
 
         let user = jwt.verify(authorization, secretKey)
 
@@ -25,12 +22,8 @@ export const validateJwt = async(req, res, next)=>{
         )
         req.user = user
         next()
-    } catch (err) {
+    }catch(err){
         console.error(err)
-        return res.status(401).send(
-            {
-                message: 'Invalid token'
-            }
-        )
+        return res.status(401).send({message: 'Invalid token'})
     }
 }
