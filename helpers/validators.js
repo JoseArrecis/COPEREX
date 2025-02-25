@@ -4,7 +4,8 @@ import {
 } from "./validate.error.js"
 import {
     existEmail,
-    existUsername
+    existUsername,
+    existCompanyName
 } from "./db.validators.js"
 
 export const registerValidator = [
@@ -38,4 +39,21 @@ export const loginValidator = [
         .notEmpty()
         .isLength({ min: 8 })  
         .withMessage('The password must be at least 8 characters long')
+]
+
+//Company
+export const saveCompanyValidator = [
+    body("name", "Name cannot be empty")
+        .notEmpty()
+        .custom(existCompanyName),
+    body("impactLevel", "Impact Level must be 'Alto', 'Medio', or 'Bajo'")
+        .notEmpty()
+        .isIn(["Alto", "Medio", "Bajo"]),
+    body("yearsExperience", "Years of experience must be a positive number")
+        .notEmpty()
+        .isInt({ min: 0 })
+        .withMessage("Years of experience must be a positive integer"),
+    body("category", "Category cannot be empty")
+        .notEmpty(),
+    validateErrors
 ]

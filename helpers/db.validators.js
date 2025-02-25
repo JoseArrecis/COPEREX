@@ -1,4 +1,5 @@
 import User from '../src/user/user.model.js'
+import Company from '../src/company/company.model.js'
 import { isValidObjectId } from 'mongoose'
 
 export const existUsername = async(username)=>{
@@ -33,6 +34,13 @@ export const existRole = async(role)=>{
         }
 }
 
+export const existCompanyName = async(name)=>{
+    const alreadyName = await Company.findOne({name})
+        if(alreadyName){
+            console.error(`Email ${name} is already taken`)
+        }
+}
+
 export const objetctIdValid = async(objectId)=>{
     if(!isValidObjectId(objectId)){
         throw new Error('Keeper is not objectId valid')
@@ -49,3 +57,4 @@ export const findUser = async(id)=>{
         return false
     }
 }
+

@@ -5,6 +5,7 @@ import morgan from "morgan"
 import helmet from "helmet"
 import cors from "cors"
 import authRoutes from "../src/auth/auth.routes.js"
+import companyRoutes from "../src/company/company.routes.js"
 import { limiter } from "../middleware/rate.limit.js"
 
 const configs = (app)=>{
@@ -18,6 +19,7 @@ const configs = (app)=>{
 
 const routes = (app)=>{
     app.use(authRoutes)
+    app.use('/v1/company', companyRoutes)
 }
 
 export const initServer = async()=>{
