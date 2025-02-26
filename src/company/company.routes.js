@@ -1,5 +1,6 @@
 import { Router } from "express"
 import { 
+    generateReport,
     getCompanies, 
     registerCompany, 
     updateCompany
@@ -35,6 +36,14 @@ api.put(
         isAdmin
     ],
     updateCompany
+)
+
+api.get(
+    '/report',
+    [
+        validateJwt
+    ],
+    generateReport
 )
 
 export default api
