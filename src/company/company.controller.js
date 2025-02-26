@@ -1,4 +1,5 @@
 import Company from './company.model.js'
+import ExcelJS from 'exceljs'
 
 export const registerCompany = async(req, res)=>{
     try {
@@ -80,6 +81,48 @@ export const updateCompany = async(req, res)=>{
                 updateCompany
             }
         )
+    }catch (err) {
+        console.error(err);
+        return res.status(500).send(
+            {
+                success: false,
+                message: 'General error',
+                err
+            }
+        )
+    }
+}
+
+export const generateReport = async(req, res) =>{
+    try {
+        const companies = await Company.find()
+
+        const workBook = new ExcelJS.Workbook()
+        const workSheet = workBook.addWorksheet('Companies Report')
+
+        workSheet.columns = [
+            { header: 'Company Name', key: 'name', width: 30 },
+            { header: 'Impact Level', key: 'impactLevel', width: 15 },
+            { header: 'Years of Experience', key: 'yearsExperience', width: 20 },
+            { header: 'Category', key: 'category', width: 20 },
+            { header: 'Created At', key: 'createdAt', width: 25 }
+        ]
+
+        companies.forEach((company) => {
+            worksheet.addRow({
+              name: company.name,
+              impactLevel: company.impactLevel,
+              yearsExperience: company.yearsExperience,
+              category: company.category,
+              createdAt: company.createdAt.toISOString().split('T')[0] 
+            })
+          })
+
+          res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+            res.setHeader('Content-Disposition', 'attachment; filename="companies_report.xlsx"')
+
+            await workbook.xlsx.write(res);
+
     }catch (err) {
         console.error(err);
         return res.status(500).send(
