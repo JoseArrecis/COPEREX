@@ -3,20 +3,17 @@ import argon2 from 'argon2'
 
 export const addClient = async(req, res)=>{
     try {
-        const { name, surname, username, email, password, phone } = req.body;
+        const { name, surname, username, email, password, phone } = req.body
 
-        // Verificamos si ya existe un usuario con el mismo username o email
-        const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+        const existingUser = await User.findOne({ $or: [{ username }, { email }] })
         if (existingUser) {
             return res.status(400).send({
                 message: 'User with this username or email already exists'
-            });
+            })
         }
 
-        // Ciframos la contraseña antes de guardarla
-        const hashedPassword = await argon2.hash(password);
+        const hashedPassword = await argon2.hash(password)
 
-        // Creamos el nuevo usuario sin el campo "role"
         const newUser = new User({
             name,
             surname,
@@ -25,16 +22,14 @@ export const addClient = async(req, res)=>{
             password: hashedPassword,
             phone,
             role: 'USER'
-        });
+        })
 
-        // Guardamos el cliente en la base de datos
-        await newUser.save();
+        await newUser.save()
 
-        // Respondemos con un mensaje de éxito
         res.status(201).send({
             message: 'Client registered successfully',
             newUser
-        });
+        })
 
     }catch (err) {
         console.error(err)
@@ -47,3 +42,64 @@ export const addClient = async(req, res)=>{
         )
     }
 }
+
+export const updateUser = async (req, res) => {
+    try {
+        const { id } = req.params
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+                return res.status(400).send(
+                {
+                    success: false,
+                    message: 'Invalid user ID'
+                }
+            )
+        }
+
+        const { name, surname, username, email, phone, profilePicture, role } = req.body
+        const requestingUser = req.user
+        const userToUpdate = await User.findById(id)
+
+        if (!userToUpdate) {
+            return res.status(404).send(
+                {
+                    success: false,
+                    message: 'User not found'
+                }
+            )
+        }
+
+        if (userToUpdate.role === 'ADMIN' && role === 'CLIENT') {
+            return res.status(403).send(
+                {
+                    success: false,
+                    message: 'You cannot downgrade an ADMIN to CLIENT'
+                }
+            )
+        }
+
+        const updateUser = await User.findByIdAndUpdate(
+            id,
+            { name, surname, username, email, phone, profilePicture, role },
+            { new: true }
+        )
+
+        return res.send(
+            {
+                success: true,
+                message: 'User updated',
+                updateUser
+            }
+        )
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send(
+            {
+                success: false,
+                message: 'General error',
+                err
+            }
+        )
+    }
+}
+

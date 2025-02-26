@@ -1,5 +1,8 @@
 import { Router } from "express"
-import { addClient } from "./user.controller.js"
+import { 
+    addClient, 
+    updateUser 
+} from "./user.controller.js"
 import { registerValidator } from "../../helpers/validators.js"
 import { deleteFileOnError } from "../../middleware/delete.file.on.error.js"
 import { isAdmin, validateJwt } from "../../middleware/validate.jwt.js"
@@ -16,5 +19,16 @@ api.post(
     ],
     addClient
 )
+
+api.put(
+    '/:id',
+    [
+        validateJwt,
+        isAdmin
+    ],
+    updateUser
+)
+
+
 
 export default api
