@@ -39,8 +39,7 @@ const userSchema = Schema(
             type: String,
             required: [true, 'Role is required'],
             uppercase: true,
-            enum: ['ADMIN','USER'],
-            default: 'USER'
+            enum: ['ADMIN', 'USER']
         },
         status: {
             type: Boolean,

@@ -41,7 +41,8 @@ api.put(
 api.get(
     '/report',
     [
-        validateJwt
+        validateJwt,
+        isAdmin
     ],
     generateReport
 )

@@ -104,8 +104,7 @@ export const generateReport = async(req, res) =>{
           { header: 'Company Name', key: 'name', width: 30 },
           { header: 'Impact Level', key: 'impactLevel', width: 15 },
           { header: 'Years of Experience', key: 'yearsExperience', width: 20 },
-          { header: 'Category', key: 'category', width: 20 },
-          { header: 'Created At', key: 'createdAt', width: 25 }
+          { header: 'Category', key: 'category', width: 20 }
         ]
     
         companies.forEach((company) => {
@@ -113,16 +112,17 @@ export const generateReport = async(req, res) =>{
             name: company.name,
             impactLevel: company.impactLevel,
             yearsExperience: company.yearsExperience,
-            category: company.category,
-            createdAt: company.createdAt.toISOString().split('T')[0] // Formato YYYY-MM-DD
+            category: company.category
           })
         })
     
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-        res.setHeader('Content-Disposition', 'attachment; filename="companies_report.xlsx"')
-    
-        await workbook.xlsx.write(res)
-        res.end()
+        res.setHeader('Content-Disposition', 'attachment; filename="reporte.xlsx"')
+        workbook.xlsx.write(res)
+        .then(() => {
+            res.end()
+        })
+
     }catch (err) {
         console.error(err)
         return res.status(500).send(
