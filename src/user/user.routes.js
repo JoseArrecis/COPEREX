@@ -1,6 +1,7 @@
 import { Router } from "express"
 import { 
     addClient, 
+    deleteOne, 
     updateUser 
 } from "./user.controller.js"
 import { registerValidator } from "../../helpers/validators.js"
@@ -29,6 +30,13 @@ api.put(
     updateUser
 )
 
-
+api.delete(
+    '/:id',
+    [
+        validateJwt,
+        isAdmin
+    ],
+    deleteOne
+)
 
 export default api
