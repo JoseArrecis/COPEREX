@@ -18,7 +18,7 @@ const companySchema = Schema(
         },
         category: {
             type: String,
-            required: true
+            required: [true, 'Category is required']
         }
     }
 )

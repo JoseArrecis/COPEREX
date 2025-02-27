@@ -1,5 +1,6 @@
 import Company from './company.model.js'
 import ExcelJS from 'exceljs'
+import fs from 'fs'
 
 export const registerCompany = async(req, res)=>{
     try {
@@ -93,37 +94,38 @@ export const updateCompany = async(req, res)=>{
     }
 }
 
-export const generateReport = async(req, res) =>{
+export const generateReport = async (req, res) => {
     try {
         const companies = await Company.find()
 
         const workbook = new ExcelJS.Workbook()
         const worksheet = workbook.addWorksheet('Companies Report')
-    
+
         worksheet.columns = [
-          { header: 'Company Name', key: 'name', width: 30 },
-          { header: 'Impact Level', key: 'impactLevel', width: 15 },
-          { header: 'Years of Experience', key: 'yearsExperience', width: 20 },
-          { header: 'Category', key: 'category', width: 20 }
+            { header: 'Company Name', key: 'name', width: 30 },
+            { header: 'Impact Level', key: 'impactLevel', width: 15 },
+            { header: 'Years of Experience', key: 'yearsExperience', width: 20 },
+            { header: 'Category', key: 'category', width: 20 }
         ]
-    
+
         companies.forEach((company) => {
-          worksheet.addRow({
-            name: company.name,
-            impactLevel: company.impactLevel,
-            yearsExperience: company.yearsExperience,
-            category: company.category
-          })
-        })
-    
-        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-        res.setHeader('Content-Disposition', 'attachment; filename="reporte.xlsx"')
-        workbook.xlsx.write(res)
-        .then(() => {
-            res.end()
+            worksheet.addRow({
+                name: company.name,
+                impactLevel: company.impactLevel,
+                yearsExperience: company.yearsExperience,
+                category: company.category
+            })
         })
 
-    }catch (err) {
+        const buffer = await workbook.xlsx.writeBuffer()
+
+        fs.writeFileSync('./reporteEmpresas.xlsx', buffer)
+        console.log('Archivo reporteEmpresas.xlsx guardado localmente.')
+
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        res.setHeader('Content-Disposition', 'attachment; filename=reporte.xlsx')
+        res.send(buffer)
+    } catch (err) {
         console.error(err)
         return res.status(500).send(
             {
