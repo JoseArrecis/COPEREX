@@ -119,8 +119,8 @@ export const generateReport = async (req, res) => {
 
         const buffer = await workbook.xlsx.writeBuffer()
 
-        fs.writeFileSync('./reporteEmpresas.xlsx', buffer)
-        console.log('Archivo reporteEmpresas.xlsx guardado localmente.')
+        fs.writeFileSync('./reportCompany/reportCompany.xlsx', buffer)
+        console.log('Se guardo el archivo reportCompany.xlsx en la carpeta reportCompany.')
 
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
         res.setHeader('Content-Disposition', 'attachment; filename=reporte.xlsx')
